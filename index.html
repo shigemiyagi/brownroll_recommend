@@ -34,6 +34,11 @@
             border-radius: 12px;
             margin-bottom: 20px;
         }
+        .shop-image {
+            width: 100%;
+            border-radius: 12px;
+            margin-top: 20px;
+        }
         .question {
             margin-bottom: 20px;
         }
@@ -43,33 +48,8 @@
             margin-bottom: 8px;
             color: #555;
         }
-        .options {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            margin-bottom: 15px;
-        }
-        .option-button {
-            background-color: #f5f5f5;
-            color: #333;
-            border: 2px solid #ddd;
-            padding: 10px 15px;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-size: 1rem;
-            flex: 1;
-            text-align: center;
-        }
-        .option-button:hover {
-            background-color: #6200ee;
-            color: #fff;
-            border-color: #6200ee;
-        }
-        .option-button.selected {
-            background-color: #6200ee;
-            color: #fff;
-            border-color: #6200ee;
+        input[type="radio"] {
+            margin-right: 10px;
         }
         button {
             background-color: #6200ee;
@@ -108,53 +88,50 @@
             margin: 5px 0;
             color: #555;
         }
-        .shop-image {
-            width: 100%;
-            border-radius: 12px;
-            margin-top: 20px;
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.5rem;
+            }
+            button {
+                font-size: 0.9rem;
+                padding: 12px;
+            }
+            .container {
+                padding: 15px;
+            }
         }
     </style>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="container">
-        <img src="images/banner.png" alt="Banner" class="banner">
+        <img src="banner.png" alt="Banner" class="banner">
         <h1>シナモンロールおすすめ診断</h1>
         <form id="questionnaire">
             <div class="question">
                 <label>コーヒーには砂糖を入れるタイプですか？</label>
-                <div class="options" data-question="q1">
-                    <div class="option-button" data-value="はい">はい</div>
-                    <div class="option-button" data-value="いいえ">いいえ</div>
-                </div>
+                <input type="radio" name="q1" value="はい" required> はい
+                <input type="radio" name="q1" value="いいえ"> いいえ
             </div>
             <div class="question">
                 <label>休日の過ごし方はどちらに近いですか？</label>
-                <div class="options" data-question="q2">
-                    <div class="option-button" data-value="アウトドア派">アウトドア派</div>
-                    <div class="option-button" data-value="インドア派">インドア派</div>
-                </div>
+                <input type="radio" name="q2" value="アウトドア派" required> アウトドア派
+                <input type="radio" name="q2" value="インドア派"> インドア派
             </div>
             <div class="question">
                 <label>映画は洋画よりも邦画が好きですか？</label>
-                <div class="options" data-question="q3">
-                    <div class="option-button" data-value="はい">はい</div>
-                    <div class="option-button" data-value="いいえ">いいえ</div>
-                </div>
+                <input type="radio" name="q3" value="はい" required> はい
+                <input type="radio" name="q3" value="いいえ"> いいえ
             </div>
             <div class="question">
                 <label>旅行に行くならどちらを選びますか？</label>
-                <div class="options" data-question="q4">
-                    <div class="option-button" data-value="寒い場所">寒い場所</div>
-                    <div class="option-button" data-value="暑い場所">暑い場所</div>
-                </div>
+                <input type="radio" name="q4" value="寒い場所" required> 寒い場所
+                <input type="radio" name="q4" value="暑い場所"> 暑い場所
             </div>
             <div class="question">
                 <label>朝食はパン派ですか？</label>
-                <div class="options" data-question="q5">
-                    <div class="option-button" data-value="はい">はい</div>
-                    <div class="option-button" data-value="いいえ">いいえ</div>
-                </div>
+                <input type="radio" name="q5" value="はい" required> はい
+                <input type="radio" name="q5" value="いいえ"> いいえ
             </div>
             <button type="submit">診断する</button>
         </form>
@@ -164,40 +141,43 @@
             <p id="menuName"></p>
             <p id="menuPrice"></p>
         </div>
-        <img src="images/shop.png" alt="Shop Exterior" class="shop-image">
+        <img src="shop.png" alt="Shop Exterior" class="shop-image">
     </div>
 
     <script>
-        document.querySelectorAll('.option-button').forEach(button => {
-            button.addEventListener('click', function () {
-                const parent = this.parentElement;
-                parent.querySelectorAll('.option-button').forEach(btn => btn.classList.remove('selected'));
-                this.classList.add('selected');
-                parent.dataset.selected = this.dataset.value;
-            });
-        });
-
         document.getElementById('questionnaire').addEventListener('submit', function (e) {
             e.preventDefault();
 
-            const answers = {};
-            document.querySelectorAll('.options').forEach(option => {
-                const question = option.dataset.question;
-                const selectedValue = option.dataset.selected;
-                if (!selectedValue) {
-                    alert('すべての質問に回答してください！');
-                    return;
-                }
-                answers[question] = selectedValue;
-            });
+            // 商品データ (14種類の商品データ)
+            const menuItems = [
+                { name_jp: "レギュラーシナモンロール", price: 430, image_url: "images/regular_cinnamon_roll.png" },
+                { name_jp: "ダブルチョコ", price: 530, image_url: "images/double_chocolate.png" },
+                { name_jp: "バースデーシナモンロール", price: 590, image_url: "images/birthday_cinnamon_roll.png" },
+                { name_jp: "ホワイト＆ホワイト", price: 550, image_url: "images/white_and_white.png" },
+                { name_jp: "トリプルチーズシナモンロール", price: 570, image_url: "images/triple_cheese_cinnamon_roll.png" },
+                { name_jp: "マイアミサンセット", price: 570, image_url: "images/miami_sunset.png" },
+                { name_jp: "オレオエスプレッソ", price: 600, image_url: "images/oreo_espresso.png" },
+                { name_jp: "マシュマロモンスター", price: 540, image_url: "images/marshmallow_monster.png" },
+                { name_jp: "メルテッドキャラメル", price: 520, image_url: "images/melted_caramel.png" },
+                { name_jp: "ナッツ愛好者のシナモンロール", price: 560, image_url: "images/nut_lover_cinnamon_roll.png" },
+                { name_jp: "メキシカンホットチョコレート", price: 600, image_url: "images/mexican_hot_chocolate.png" },
+                { name_jp: "キャンプファイアスモア", price: 550, image_url: "images/campfire_smore.png" },
+                { name_jp: "忍者ロール", price: 580, image_url: "images/ninja_roll.png" },
+                { name_jp: "フロスティングなしのシナモンロール", price: 480, image_url: "images/no_frosting_cinnamon_roll.png" }
+            ];
 
-            // 診断ロジック
-            const items = [
-                { name_jp: "レギュラーシナモンロール", price: 430, image_file: "regular_cinnamon_roll.png", sweetness: 5, cold_preference: 5, western_style: 5 },
-                { name_jp: "ダブルチョコ", price: 530, image_file: "double_chocolate.png", sweetness: 9, cold_preference: 4, western_style: 9 },
-                { name_jp: "バースデーシナモンロール", price: 590, image_file: "birthday_cinnamon_roll.png", sweetness: 8, cold_preference: 6, western_style: 7 },
-                { name_jp: "ホワイト＆ホワイト", price: 550, image_file: "white_and_white.png", sweetness: 6, cold_preference: 5, western_style: 7 },
-                { name_jp: "トリプルチーズシナモンロール", price: 570, image_file: "triple_cheese_cinnamon_roll.png", sweetness: 7, cold_preference: 4, western_style: 9 },
-                { name_jp: "マイアミサンセット", price: 570, image_file: "miami_sunset.png", sweetness: 8, cold_preference: 7, western_style: 8 },
-                { name_jp: "オレオエスプレッソ", price: 600, image_file: "oreo_espresso.png", sweetness: 7, cold_preference: 6, western_style: 9 },
-                { name_jp: "マシュマロモンスター", price: 540, image_file: "marshmallow_monster.png", sweetness
+            // 回答を取得
+            const answers = [
+                document.querySelector('input[name="q1"]:checked').value,
+                document.querySelector('input[name="q2"]:checked').value,
+                document.querySelector('input[name="q3"]:checked').value,
+                document.querySelector('input[name="q4"]:checked').value,
+                document.querySelector('input[name="q5"]:checked').value
+            ];
+
+            // シンプルなロジックで商品を決定 (回答をもとにインデックスを計算)
+            const index = answers.reduce((acc, answer) => acc + (answer === "はい" || answer === "アウトドア派" ? 1 : 0), 0) % menuItems.length;
+            const recommendedItem = menuItems[index];
+
+            // 診断結果を表示
+            document.getElement
