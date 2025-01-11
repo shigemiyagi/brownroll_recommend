@@ -62,9 +62,25 @@
             font-size: 1rem;
             cursor: pointer;
             transition: background-color 0.3s ease;
+            flex: 1 1 40%;
+            min-width: 100px;
         }
         .option-button:hover {
             background-color: #45009d;
+        }
+        .diagnose-button {
+            background-color: #03dac6;
+            color: #fff;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-top: 20px;
+        }
+        .diagnose-button:hover {
+            background-color: #018786;
         }
         .result {
             margin-top: 20px;
@@ -96,6 +112,10 @@
             .option-button {
                 font-size: 0.9rem;
                 padding: 8px 16px;
+            }
+            .diagnose-button {
+                font-size: 0.9rem;
+                padding: 10px 20px;
             }
             .container {
                 padding: 15px;
@@ -141,27 +161,118 @@
 
         // 質問データ
         const questions = [
-            { question: "コーヒーには砂糖を入れるタイプですか？", answers: ["はい", "いいえ"], key: "sweetness", value: [2, 0] },
-            { question: "休日の過ごし方はどちらに近いですか？", answers: ["アウトドア派", "インドア派"], key: "cold", value: [2, 0] },
-            { question: "映画は洋画よりも邦画が好きですか？", answers: ["はい", "いいえ"], key: "western", value: [0, 2] },
-            { question: "旅行に行くならどちらを選びますか？", answers: ["寒い場所", "暑い場所"], key: "cold", value: [3, 0] },
-            { question: "朝食はパン派ですか？", answers: ["はい", "いいえ"], key: "sweetness", value: [1, 0] },
+            { 
+                question: "コーヒーには砂糖を入れるタイプですか？", 
+                answers: ["はい", "いいえ"], 
+                key: "sweetness", 
+                value: [2, 0] 
+            },
+            { 
+                question: "休日の過ごし方はどちらに近いですか？", 
+                answers: ["アウトドア派", "インドア派"], 
+                key: "cold", 
+                value: [2, 0] 
+            },
+            { 
+                question: "映画は洋画よりも邦画が好きですか？", 
+                answers: ["はい", "いいえ"], 
+                key: "western", 
+                value: [0, 2] 
+            },
+            { 
+                question: "旅行に行くならどちらを選びますか？", 
+                answers: ["寒い場所", "暑い場所"], 
+                key: "cold", 
+                value: [3, 0] 
+            },
+            { 
+                question: "朝食はパン派ですか？", 
+                answers: ["はい", "いいえ"], 
+                key: "sweetness", 
+                value: [1, 0] 
+            },
         ];
 
-        // 質問生成
-        const questionContainer = document.getElementById("questions");
+        // 初期スコア
         const userScore = { sweetness: 0, cold: 0, western: 0 };
+        let currentQuestionIndex = 0;
 
-        questions.forEach((q, index) => {
-            const questionDiv = document.createElement("div");
-            questionDiv.classList.add("question");
-            questionDiv.innerHTML = `<h2>${q.question}</h2>`;
-            const optionsDiv = document.createElement("div");
-            optionsDiv.classList.add("options");
+        const questionContainer = document.getElementById("questions");
+        const resultContainer = document.getElementById("result");
+        const menuImage = document.getElementById("menuImage");
+        const menuName = document.getElementById("menuName");
+        const menuPrice = document.getElementById("menuPrice");
 
-            q.answers.forEach((answer, idx) => {
-                const button = document.createElement("button");
-                button.classList.add("option-button");
-                button.innerText = answer;
-                button.addEventListener("click", () => {
-                    userScore[q.key] += q.value[idx
+        // 質問を表示する関数
+        function showQuestion(index) {
+            if (index < questions.length) {
+                const q = questions[index];
+                questionContainer.innerHTML = ''; // 既存の質問をクリア
+
+                const questionDiv = document.createElement("div");
+                questionDiv.classList.add("question");
+                questionDiv.innerHTML = `<h2>${q.question}</h2>`;
+                const optionsDiv = document.createElement("div");
+                optionsDiv.classList.add("options");
+
+                q.answers.forEach((answer, idx) => {
+                    const button = document.createElement("button");
+                    button.classList.add("option-button");
+                    button.innerText = answer;
+                    button.addEventListener("click", () => {
+                        userScore[q.key] += q.value[idx];
+                        currentQuestionIndex++;
+                        showQuestion(currentQuestionIndex);
+                    });
+                    optionsDiv.appendChild(button);
+                });
+
+                questionDiv.appendChild(optionsDiv);
+                questionContainer.appendChild(questionDiv);
+            } else {
+                // 全ての質問に回答したら診断結果を表示
+                showResult();
+            }
+        }
+
+        // 診断結果を表示する関数
+        function showResult() {
+            questionContainer.style.display = 'none';
+            resultContainer.style.display = 'block';
+
+            // スコアに基づいて最適な商品を選択
+            // シンプルなロジック: 各属性のスコアを合計し、最も合致する商品を選ぶ
+            let bestMatch = null;
+            let highestMatchScore = -1;
+
+            products.forEach(product => {
+                // マッチスコアを計算
+                const matchScore = 
+                    (userScore.sweetness - Math.abs(userScore.sweetness - product.sweetness)) +
+                    (userScore.cold - Math.abs(userScore.cold - product.cold)) +
+                    (userScore.western - Math.abs(userScore.western - product.western));
+                
+                if (matchScore > highestMatchScore) {
+                    highestMatchScore = matchScore;
+                    bestMatch = product;
+                }
+            });
+
+            // 結果を表示
+            if (bestMatch) {
+                menuImage.src = bestMatch.image;
+                menuImage.alt = bestMatch.name_jp;
+                menuName.textContent = bestMatch.name_jp;
+                menuPrice.textContent = `価格: ¥${bestMatch.price}`;
+            } else {
+                menuName.textContent = "該当するシナモンロールが見つかりませんでした。";
+            }
+        }
+
+        // ページロード時に最初の質問を表示
+        window.onload = () => {
+            showQuestion(currentQuestionIndex);
+        };
+    </script>
+</body>
+</html>
