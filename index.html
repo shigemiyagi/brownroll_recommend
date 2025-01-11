@@ -42,27 +42,28 @@
         .question {
             margin-bottom: 20px;
         }
-        .question label {
-            font-weight: bold;
-            display: block;
-            margin-bottom: 8px;
-            color: #555;
+        .question h2 {
+            font-size: 1.2rem;
+            color: #333;
+            margin-bottom: 15px;
         }
-        input[type="radio"] {
-            margin-right: 10px;
+        .options {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
         }
-        button {
+        .option-button {
             background-color: #6200ee;
             color: #fff;
             border: none;
-            padding: 15px;
+            padding: 10px 20px;
             border-radius: 8px;
-            cursor: pointer;
-            width: 100%;
             font-size: 1rem;
+            cursor: pointer;
             transition: background-color 0.3s ease;
         }
-        button:hover {
+        .option-button:hover {
             background-color: #45009d;
         }
         .result {
@@ -92,9 +93,9 @@
             h1 {
                 font-size: 1.5rem;
             }
-            button {
+            .option-button {
                 font-size: 0.9rem;
-                padding: 12px;
+                padding: 8px 16px;
             }
             .container {
                 padding: 15px;
@@ -107,34 +108,9 @@
     <div class="container">
         <img src="banner.png" alt="Banner" class="banner">
         <h1>シナモンロールおすすめ診断</h1>
-        <form id="questionnaire">
-            <div class="question">
-                <label>コーヒーには砂糖を入れるタイプですか？</label>
-                <input type="radio" name="q1" value="はい" required> はい
-                <input type="radio" name="q1" value="いいえ"> いいえ
-            </div>
-            <div class="question">
-                <label>休日の過ごし方はどちらに近いですか？</label>
-                <input type="radio" name="q2" value="アウトドア派" required> アウトドア派
-                <input type="radio" name="q2" value="インドア派"> インドア派
-            </div>
-            <div class="question">
-                <label>映画は洋画よりも邦画が好きですか？</label>
-                <input type="radio" name="q3" value="はい" required> はい
-                <input type="radio" name="q3" value="いいえ"> いいえ
-            </div>
-            <div class="question">
-                <label>旅行に行くならどちらを選びますか？</label>
-                <input type="radio" name="q4" value="寒い場所" required> 寒い場所
-                <input type="radio" name="q4" value="暑い場所"> 暑い場所
-            </div>
-            <div class="question">
-                <label>朝食はパン派ですか？</label>
-                <input type="radio" name="q5" value="はい" required> はい
-                <input type="radio" name="q5" value="いいえ"> いいえ
-            </div>
-            <button type="submit">診断する</button>
-        </form>
+
+        <div id="questions"></div>
+
         <div class="result" id="result">
             <h2>あなたにおすすめのシナモンロールは...</h2>
             <img id="menuImage" src="" alt="Recommended Cinnamon Roll">
@@ -145,39 +121,47 @@
     </div>
 
     <script>
-        document.getElementById('questionnaire').addEventListener('submit', function (e) {
-            e.preventDefault();
+        // 商品データ
+        const products = [
+            { name_jp: "レギュラーシナモンロール", price: 430, image: "images/regular_cinnamon_roll.png", sweetness: 7, cold: 5, western: 6 },
+            { name_jp: "ダブルチョコ", price: 530, image: "images/double_chocolate.png", sweetness: 9, cold: 6, western: 8 },
+            { name_jp: "バースデーシナモンロール", price: 590, image: "images/birthday_cinnamon_roll.png", sweetness: 8, cold: 7, western: 9 },
+            { name_jp: "ホワイト＆ホワイト", price: 550, image: "images/white_and_white.png", sweetness: 8, cold: 6, western: 7 },
+            { name_jp: "トリプルチーズシナモンロール", price: 570, image: "images/triple_cheese_cinnamon_roll.png", sweetness: 6, cold: 7, western: 9 },
+            { name_jp: "マイアミサンセット", price: 570, image: "images/miami_sunset.png", sweetness: 8, cold: 7, western: 8 },
+            { name_jp: "オレオエスプレッソ", price: 600, image: "images/oreo_espresso.png", sweetness: 7, cold: 6, western: 9 },
+            { name_jp: "マシュマロモンスター", price: 540, image: "images/marshmallow_monster.png", sweetness: 8, cold: 7, western: 7 },
+            { name_jp: "メルテッドキャラメル", price: 520, image: "images/melted_caramel.png", sweetness: 8, cold: 5, western: 6 },
+            { name_jp: "ナッツ愛好者のシナモンロール", price: 560, image: "images/nut_lover_cinnamon_roll.png", sweetness: 7, cold: 8, western: 8 },
+            { name_jp: "メキシカンホットチョコレート", price: 600, image: "images/mexican_hot_chocolate.png", sweetness: 9, cold: 7, western: 9 },
+            { name_jp: "キャンプファイアスモア", price: 550, image: "images/campfire_smore.png", sweetness: 8, cold: 6, western: 7 },
+            { name_jp: "忍者ロール", price: 580, image: "images/ninja_roll.png", sweetness: 6, cold: 7, western: 5 },
+            { name_jp: "フロスティングなしのシナモンロール", price: 480, image: "images/no_frosting_cinnamon_roll.png", sweetness: 5, cold: 6, western: 6 },
+        ];
 
-            // 商品データ (14種類の商品データ)
-            const menuItems = [
-                { name_jp: "レギュラーシナモンロール", price: 430, image_url: "images/regular_cinnamon_roll.png" },
-                { name_jp: "ダブルチョコ", price: 530, image_url: "images/double_chocolate.png" },
-                { name_jp: "バースデーシナモンロール", price: 590, image_url: "images/birthday_cinnamon_roll.png" },
-                { name_jp: "ホワイト＆ホワイト", price: 550, image_url: "images/white_and_white.png" },
-                { name_jp: "トリプルチーズシナモンロール", price: 570, image_url: "images/triple_cheese_cinnamon_roll.png" },
-                { name_jp: "マイアミサンセット", price: 570, image_url: "images/miami_sunset.png" },
-                { name_jp: "オレオエスプレッソ", price: 600, image_url: "images/oreo_espresso.png" },
-                { name_jp: "マシュマロモンスター", price: 540, image_url: "images/marshmallow_monster.png" },
-                { name_jp: "メルテッドキャラメル", price: 520, image_url: "images/melted_caramel.png" },
-                { name_jp: "ナッツ愛好者のシナモンロール", price: 560, image_url: "images/nut_lover_cinnamon_roll.png" },
-                { name_jp: "メキシカンホットチョコレート", price: 600, image_url: "images/mexican_hot_chocolate.png" },
-                { name_jp: "キャンプファイアスモア", price: 550, image_url: "images/campfire_smore.png" },
-                { name_jp: "忍者ロール", price: 580, image_url: "images/ninja_roll.png" },
-                { name_jp: "フロスティングなしのシナモンロール", price: 480, image_url: "images/no_frosting_cinnamon_roll.png" }
-            ];
+        // 質問データ
+        const questions = [
+            { question: "コーヒーには砂糖を入れるタイプですか？", answers: ["はい", "いいえ"], key: "sweetness", value: [2, 0] },
+            { question: "休日の過ごし方はどちらに近いですか？", answers: ["アウトドア派", "インドア派"], key: "cold", value: [2, 0] },
+            { question: "映画は洋画よりも邦画が好きですか？", answers: ["はい", "いいえ"], key: "western", value: [0, 2] },
+            { question: "旅行に行くならどちらを選びますか？", answers: ["寒い場所", "暑い場所"], key: "cold", value: [3, 0] },
+            { question: "朝食はパン派ですか？", answers: ["はい", "いいえ"], key: "sweetness", value: [1, 0] },
+        ];
 
-            // 回答を取得
-            const answers = [
-                document.querySelector('input[name="q1"]:checked').value,
-                document.querySelector('input[name="q2"]:checked').value,
-                document.querySelector('input[name="q3"]:checked').value,
-                document.querySelector('input[name="q4"]:checked').value,
-                document.querySelector('input[name="q5"]:checked').value
-            ];
+        // 質問生成
+        const questionContainer = document.getElementById("questions");
+        const userScore = { sweetness: 0, cold: 0, western: 0 };
 
-            // シンプルなロジックで商品を決定 (回答をもとにインデックスを計算)
-            const index = answers.reduce((acc, answer) => acc + (answer === "はい" || answer === "アウトドア派" ? 1 : 0), 0) % menuItems.length;
-            const recommendedItem = menuItems[index];
+        questions.forEach((q, index) => {
+            const questionDiv = document.createElement("div");
+            questionDiv.classList.add("question");
+            questionDiv.innerHTML = `<h2>${q.question}</h2>`;
+            const optionsDiv = document.createElement("div");
+            optionsDiv.classList.add("options");
 
-            // 診断結果を表示
-            document.getElement
+            q.answers.forEach((answer, idx) => {
+                const button = document.createElement("button");
+                button.classList.add("option-button");
+                button.innerText = answer;
+                button.addEventListener("click", () => {
+                    userScore[q.key] += q.value[idx
