@@ -118,7 +118,7 @@
 </head>
 <body>
     <div class="container">
-        <img src="banner.png" alt="Banner" class="banner">
+        <img src="images/banner.png" alt="Banner" class="banner">
         <h1>シナモンロールおすすめ診断</h1>
         <form id="questionnaire">
             <div class="question">
@@ -164,7 +164,7 @@
             <p id="menuName"></p>
             <p id="menuPrice"></p>
         </div>
-        <img src="shop.png" alt="Shop Exterior" class="shop-image">
+        <img src="images/shop.png" alt="Shop Exterior" class="shop-image">
     </div>
 
     <script>
@@ -191,56 +191,13 @@
                 answers[question] = selectedValue;
             });
 
-            const result = {}; // 診断ロジックで結果を決める（省略）
-            document.getElementById('menuImage').src = result.image_url;
-            document.getElementById('menuName').innerText = result.name_jp;
-            document.getElementById('menuPrice').innerText = `価格: ¥${result.price}`;
-            document.getElementById('result').style.display = 'block';
-        });
-    </script>
-</body>
-</html>
-
-        // 診断ロジック
-        document.getElementById('questionnaire').addEventListener('submit', function (e) {
-            e.preventDefault();
-
-            const answers = {};
-            document.querySelectorAll('.options').forEach(option => {
-                const question = option.dataset.question;
-                const selectedValue = option.dataset.selected;
-                if (!selectedValue) {
-                    alert('すべての質問に回答してください！');
-                    return;
-                }
-                answers[question] = selectedValue;
-            });
-
+            // 診断ロジック
             const items = [
                 { name_jp: "レギュラーシナモンロール", price: 430, image_file: "regular_cinnamon_roll.png", sweetness: 5, cold_preference: 5, western_style: 5 },
                 { name_jp: "ダブルチョコ", price: 530, image_file: "double_chocolate.png", sweetness: 9, cold_preference: 4, western_style: 9 },
                 { name_jp: "バースデーシナモンロール", price: 590, image_file: "birthday_cinnamon_roll.png", sweetness: 8, cold_preference: 6, western_style: 7 },
-                // 省略: 残りのデータをここに記載
-            ];
-
-            const score = { sweetness: 0, cold_preference: 0, western_style: 0 };
-            if (answers.q1 === "はい") score.sweetness += 2;
-            if (answers.q2 === "アウトドア派") score.cold_preference += 3;
-            if (answers.q3 === "いいえ") score.western_style += 2;
-            if (answers.q4 === "寒い場所") score.cold_preference += 4;
-            if (answers.q5 === "はい") score.sweetness += 1;
-
-            let bestMatch = null;
-            let bestDiff = Infinity;
-            items.forEach(item => {
-                const diff = Math.abs(score.sweetness - item.sweetness) +
-                             Math.abs(score.cold_preference - item.cold_preference) +
-                             Math.abs(score.western_style - item.western_style);
-                if (diff < bestDiff) {
-                    bestMatch = item;
-                    bestDiff = diff;
-                }
-            });
-
-            document.getElementById('menuImage').src = `images/${bestMatch.image_file}`;
-            document.getElement
+                { name_jp: "ホワイト＆ホワイト", price: 550, image_file: "white_and_white.png", sweetness: 6, cold_preference: 5, western_style: 7 },
+                { name_jp: "トリプルチーズシナモンロール", price: 570, image_file: "triple_cheese_cinnamon_roll.png", sweetness: 7, cold_preference: 4, western_style: 9 },
+                { name_jp: "マイアミサンセット", price: 570, image_file: "miami_sunset.png", sweetness: 8, cold_preference: 7, western_style: 8 },
+                { name_jp: "オレオエスプレッソ", price: 600, image_file: "oreo_espresso.png", sweetness: 7, cold_preference: 6, western_style: 9 },
+                { name_jp: "マシュマロモンスター", price: 540, image_file: "marshmallow_monster.png", sweetness
