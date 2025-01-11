@@ -175,8 +175,8 @@
             },
         ];
 
-        // 初期スコア
-        const userScore = { sweetness: 0, cold: 0, western: 0 };
+        // 初期スコア（商品属性の最低値に合わせる）
+        const userScore = { sweetness: 5, cold: 5, western: 5 };
         let currentQuestionIndex = 0;
 
         const questionContainer = document.getElementById("questions");
