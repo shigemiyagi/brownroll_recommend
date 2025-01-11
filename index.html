@@ -34,11 +34,6 @@
             border-radius: 12px;
             margin-bottom: 20px;
         }
-        .shop-image {
-            width: 100%;
-            border-radius: 12px;
-            margin-top: 20px;
-        }
         .question {
             margin-bottom: 20px;
         }
@@ -48,23 +43,35 @@
             margin-bottom: 8px;
             color: #555;
         }
-        .options button {
-            display: block;
-            width: 100%;
-            margin: 8px 0;
-            padding: 10px;
-            font-size: 1rem;
-            background-color: #6200ee;
-            color: #fff;
-            border: none;
+        .options {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        .option-button {
+            background-color: #f5f5f5;
+            color: #333;
+            border: 2px solid #ddd;
+            padding: 10px 15px;
             border-radius: 8px;
             cursor: pointer;
-            transition: background-color 0.3s ease;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+            flex: 1;
+            text-align: center;
         }
-        .options button:hover {
-            background-color: #45009d;
+        .option-button:hover {
+            background-color: #6200ee;
+            color: #fff;
+            border-color: #6200ee;
         }
-        button[type="submit"] {
+        .option-button.selected {
+            background-color: #6200ee;
+            color: #fff;
+            border-color: #6200ee;
+        }
+        button {
             background-color: #6200ee;
             color: #fff;
             border: none;
@@ -75,7 +82,7 @@
             font-size: 1rem;
             transition: background-color 0.3s ease;
         }
-        button[type="submit"]:hover {
+        button:hover {
             background-color: #45009d;
         }
         .result {
@@ -101,59 +108,52 @@
             margin: 5px 0;
             color: #555;
         }
-        @media (max-width: 768px) {
-            h1 {
-                font-size: 1.5rem;
-            }
-            button {
-                font-size: 0.9rem;
-                padding: 12px;
-            }
-            .container {
-                padding: 15px;
-            }
+        .shop-image {
+            width: 100%;
+            border-radius: 12px;
+            margin-top: 20px;
         }
     </style>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="container">
-        <img src="images/banner.png" alt="Banner" class="banner">
+        <img src="banner.png" alt="Banner" class="banner">
         <h1>シナモンロールおすすめ診断</h1>
         <form id="questionnaire">
             <div class="question">
                 <label>コーヒーには砂糖を入れるタイプですか？</label>
                 <div class="options" data-question="q1">
-                    <button type="button" data-value="はい">はい</button>
-                    <button type="button" data-value="いいえ">いいえ</button>
+                    <div class="option-button" data-value="はい">はい</div>
+                    <div class="option-button" data-value="いいえ">いいえ</div>
                 </div>
             </div>
             <div class="question">
                 <label>休日の過ごし方はどちらに近いですか？</label>
                 <div class="options" data-question="q2">
-                    <button type="button" data-value="アウトドア派">アウトドア派</button>
-                    <button type="button" data-value="インドア派">インドア派</button>
+                    <div class="option-button" data-value="アウトドア派">アウトドア派</div>
+                    <div class="option-button" data-value="インドア派">インドア派</div>
                 </div>
             </div>
             <div class="question">
                 <label>映画は洋画よりも邦画が好きですか？</label>
                 <div class="options" data-question="q3">
-                    <button type="button" data-value="はい">はい</button>
-                    <button type="button" data-value="いいえ">いいえ</button>
+                    <div class="option-button" data-value="はい">はい</div>
+                    <div class="option-button" data-value="いいえ">いいえ</div>
                 </div>
             </div>
             <div class="question">
                 <label>旅行に行くならどちらを選びますか？</label>
                 <div class="options" data-question="q4">
-                    <button type="button" data-value="寒い場所">寒い場所</button>
-                    <button type="button" data-value="暑い場所">暑い場所</button>
+                    <div class="option-button" data-value="寒い場所">寒い場所</div>
+                    <div class="option-button" data-value="暑い場所">暑い場所</div>
                 </div>
             </div>
             <div class="question">
                 <label>朝食はパン派ですか？</label>
                 <div class="options" data-question="q5">
-                    <button type="button" data-value="はい">はい</button>
-                    <button type="button" data-value="いいえ">いいえ</button>
+                    <div class="option-button" data-value="はい">はい</div>
+                    <div class="option-button" data-value="いいえ">いいえ</div>
                 </div>
             </div>
             <button type="submit">診断する</button>
@@ -164,19 +164,42 @@
             <p id="menuName"></p>
             <p id="menuPrice"></p>
         </div>
-        <img src="images/shop.png" alt="Shop Exterior" class="shop-image">
+        <img src="shop.png" alt="Shop Exterior" class="shop-image">
     </div>
 
     <script>
-        // 回答選択ロジック
-        document.querySelectorAll('.options button').forEach(button => {
+        document.querySelectorAll('.option-button').forEach(button => {
             button.addEventListener('click', function () {
-                const options = this.parentElement;
-                options.dataset.selected = this.dataset.value;
-                options.querySelectorAll('button').forEach(btn => btn.classList.remove('selected'));
+                const parent = this.parentElement;
+                parent.querySelectorAll('.option-button').forEach(btn => btn.classList.remove('selected'));
                 this.classList.add('selected');
+                parent.dataset.selected = this.dataset.value;
             });
         });
+
+        document.getElementById('questionnaire').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const answers = {};
+            document.querySelectorAll('.options').forEach(option => {
+                const question = option.dataset.question;
+                const selectedValue = option.dataset.selected;
+                if (!selectedValue) {
+                    alert('すべての質問に回答してください！');
+                    return;
+                }
+                answers[question] = selectedValue;
+            });
+
+            const result = {}; // 診断ロジックで結果を決める（省略）
+            document.getElementById('menuImage').src = result.image_url;
+            document.getElementById('menuName').innerText = result.name_jp;
+            document.getElementById('menuPrice').innerText = `価格: ¥${result.price}`;
+            document.getElementById('result').style.display = 'block';
+        });
+    </script>
+</body>
+</html>
 
         // 診断ロジック
         document.getElementById('questionnaire').addEventListener('submit', function (e) {
