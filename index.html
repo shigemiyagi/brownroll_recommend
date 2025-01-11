@@ -68,20 +68,6 @@
         .option-button:hover {
             background-color: #45009d;
         }
-        .diagnose-button {
-            background-color: #03dac6;
-            color: #fff;
-            border: none;
-            padding: 12px 24px;
-            border-radius: 8px;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-            margin-top: 20px;
-        }
-        .diagnose-button:hover {
-            background-color: #018786;
-        }
         .result {
             margin-top: 20px;
             padding: 15px;
@@ -112,10 +98,6 @@
             .option-button {
                 font-size: 0.9rem;
                 padding: 8px 16px;
-            }
-            .diagnose-button {
-                font-size: 0.9rem;
-                padding: 10px 20px;
             }
             .container {
                 padding: 15px;
@@ -241,19 +223,18 @@
             resultContainer.style.display = 'block';
 
             // スコアに基づいて最適な商品を選択
-            // シンプルなロジック: 各属性のスコアを合計し、最も合致する商品を選ぶ
+            // 合計差を計算し、最も差が小さい商品を選ぶ
             let bestMatch = null;
-            let highestMatchScore = -1;
+            let smallestDifference = Infinity;
 
             products.forEach(product => {
-                // マッチスコアを計算
-                const matchScore = 
-                    (userScore.sweetness - Math.abs(userScore.sweetness - product.sweetness)) +
-                    (userScore.cold - Math.abs(userScore.cold - product.cold)) +
-                    (userScore.western - Math.abs(userScore.western - product.western));
+                const totalDifference = 
+                    Math.abs(userScore.sweetness - product.sweetness) + 
+                    Math.abs(userScore.cold - product.cold) + 
+                    Math.abs(userScore.western - product.western);
                 
-                if (matchScore > highestMatchScore) {
-                    highestMatchScore = matchScore;
+                if (totalDifference < smallestDifference) {
+                    smallestDifference = totalDifference;
                     bestMatch = product;
                 }
             });
